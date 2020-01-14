@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block page_content %}
+
+<style>
+	h2{font-family:'Dancing Script';, normal, sans-serif;}
+
+
+ 
+	.projectcontainer {
+		
+  display: flex;
+  justify-content: center;
+ 
+
+}
+
+.projectgrid {
+ background-image: url("{% static '144m.jpg' %}")
+  background-repeat:no-repeat;
+  background-size:cover;
+  width: 100vw;
+  height:100vh;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  flex-direction: row;
+}
+.container{width:14vw;
+height:100vh;
+color:white;
+
+font-size:3vw;
+background-color:white;
+opacity:.75;}
+.container a{color:black;}
+.projectgriditem {
+  width:85vw;
+  
+  height:25vh;
+  font-size:2vw;
+  color:white;
+  margin-right: 1vw;
+
+}
+.projectgriditem2 {
+  width:43vw;
+
+ float:right;
+  min-height:25vh;
+  font-size:3vw;
+ 
+}
+.projectgriditem3 {
+  width:43vw;
+
+ float:right;
+  height:25vh;
+  font-size:3vw;
+ 
+}
+  /* The width is the width of the web page */
+.card{color:black}
+
+}</style>
+
+  
+  	<div class="projectcontainer">
+       
+<div class ="projectgrid">
+<div class="container">
+                   <a  href="{%url 'home' %}">Login 
+                
+              </a>
+      <br>
+      <hr>
+        
+          <a  href="">About</a>
+        <br>
+        <hr>
+          <a  href="{%url 'blog_index' %}">Info</a>
+      <br>
+      <hr>
+        <a  href="{% url 'email' %}" >Post</a>
+       <br>
+       <hr>
+        <a href="">Directory</a>
+        <br>
+        <Hr>
+
+        
+      
+          <a href="{% url 'home' %}" style="font-size:2.6vw">Interactive Map</a>
+          <br>
+          <a style="font-size:1vw;"class="aboutbutt btn btn-danger" href="{% url 'blog_category' 'emergency' %}">EMERGENCY POSTS</a>
+</div>
+
+	<div class="projectgriditem">
+
+
+<h2 align="right" STYLE="font-size:7vw" > <i>SMART CITIES HUB </i></h2>
+<p align="right"> The ultimate webapp for all your smart city needs</p>
+  <div class="projectgriditem2" style="min-height:25vh">
+      <div class="card round" style="min-height:25vh">
+         
+        <p class="card-text"> Weather</p>
+  <strong>{{ aqi }}F <br> {{aqi2}} <br>{{aqi3}}mph winds <br>Feels Like:{{aqi4}}</strong>
+  
+</div>
+</div>
+<div class="projectgriditem3" style="height:25vh">
+      <div class="card round" style="height:25vh. width=50%">
+         
+        <p class="card-text"> Air Quality Index</p>
+  <strong>{{ datetime }}</strong>
+
+</div>
+</div>  
+
+
+
+    <script> $(".projectgriditem3").click(function(){
+  alert("{{recc}}");
+});
+</script>
+{% endblock %}

@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load static %}
+{% block page_content %}
+    
+
+
+<style>
+      #mapd{
+        height: 60vh;  
+        width: 35vw;  
+       }
+a:hover{text-decoration:none;}
+.card{opacity:.75;}}
+.projectcontainer {
+  display: flex;
+  justify-content: center;
+
+}
+
+.projectgrid {
+ 
+  width: 100vw;
+  height:100vh;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+
+  }
+
+.projectgriditem {
+ 
+ margin:2vh;
+ height:25vh;
+ width:22vw;
+  }
+  .center{width:100vw;
+font-family:'Dancing Script';, normal, sans-serif;
+font-size:5vw;
+    height:13vh;
+color:white;}
+</style>
+
+<body>
+     <div class="center"> <h1 align="center" style="font-size:7vw"> REQUESTS/INFO </h1>
+     </div>
+      <div class="projectcontainer">
+    <div class="projectgrid">
+  
+     {% for post in posts %}
+    
+     <div class = "projectgriditem">
+         <a href="{% url 'blog_detail' post.pk%}">
+        <div class="card round" style="height:45vh;overflow:hidden">
+         <div class="card-body">
+    <h5 class="card-title" style="font-size:3vw" >{{post.title}}</h5>
+     <p class="card-text"> {{post.created.date}}</p>
+     
+      {% for category in post.categories.all %}
+     <p class="card-text"> <a href="{% url 'blog_category' category.name %}">
+                 {{ category.name }}
+                  {% endfor %}
+             </a></p>
+
+     <p class="card-text">{{post.body}} </p>   
+       </div>
+   </div>
+   </a>
+</div>
+
+             {% endfor %}
+
+</div>
+ <div id="mapd"></div>
+
+</body>
+ <script>
+      var map;
+              var locations = [
+      ['1', {{post1}},{{post2}}, 4],
+      ['2', {{post3}},{{post4}}, 5],
+      ['3', {{post5}},{{post6}}, 3],
+      ['4', {{post7}},{{post8}}, 2],
+      ['5', {{post9}},{{post10}}, 1]
+    ];
+      function initMap() {
+
+        map = new google.maps.Map(document.getElementById('mapd'), {
+          center: {lat: 26.3678, lng: -80.234},
+          zoom: 10
+        });
+         var marker, i;
+
+    for (i = 0; i < locations.length; i++) {  
+      marker = new google.maps.Marker({
+        position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+        map: map
+      });
+
+      }
+      }
+    </script>
+    
+<script async defer
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCewAvTu5t53SI1Pj5CglYnnyC-CpnZr-4&callback=initMap">
+</script>
+
+
+ {% endblock %}

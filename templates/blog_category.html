@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+  
+     
+     
+         
+
+{% load static %}
+{% block page_content %}
+<style>
+a:hover{text-decoration:none;}
+.card{opacity:.75;}}
+.projectcontainer {
+  display: flex;
+  justify-content: center;
+
+}
+
+.projectgrid {
+ 
+  width: 100vw;
+  height:100vh;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+
+  }
+
+.projectgriditem {
+ 
+ margin:2vh;
+ height:25vh;
+ width:22vw;
+  }
+  .center{width:100vw;
+font-family:'Dancing Script';, normal, sans-serif;
+font-size:5vw;
+    height:13vh;
+color:white;}
+</style>
+<body>
+     <div class="center"> <h1 align="center" style="font-size:7vw"> INFO</h1>
+     </div>
+      <div class="projectcontainer">
+    <div class="projectgrid">
+  
+     {% for post in posts %}
+      {% for category in post.categories.all %}
+         <a href="{% url 'blog_category' category.name %}">
+            
+     <div class = "projectgriditem">
+         <a href="{% url 'blog_detail' post.pk%}">
+        <div class="card round" style="height:45vh; overflow:hidden">
+         <div class="card-body">
+    <h5 class="card-title" style="font-size:3vw; overflow:hidden">{{post.title}}</h5>
+     <p class="card-text"> {{post.created.date}}</p>
+      {% for category in post.categories.all %}
+     <p class="card-text"> <a href="{% url 'blog_category' category.name %}">
+                 {{ category.name }}
+                  {% endfor %}
+                  {% endfor %}
+             </a></p>
+     <p class="card-text">{{post.body}} </p>   
+       </div>
+   </div>
+   </a>
+</div>
+
+             {% endfor %}
+
+</div>
+</body>
+ {% endblock %}

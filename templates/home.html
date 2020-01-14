@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block page_content %}
+
+<style>
+	p{color:white;}
+#map_canvas {
+    width: 80vw;
+    height: 80vh;
+    margin: 0 auto;
+}
+#current {
+    padding-top: 1vw;
+</style>
+
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCewAvTu5t53SI1Pj5CglYnnyC-CpnZr-4&&libraries=places"></script>
+<script src="jquery-3.4.1.min.js"></script>
+ <script>
+  function callAPIS(lat,lon) {
+ var x=lat;
+ var y=lon;
+    $.ajax({
+        type: "GET",
+       
+        dataType: 'json',
+
+        url: "https://api.breezometer.com/air-quality/v2/current-conditions?lat="+y+"&lon="+x+"&key=26d253d0e9ef431c8656762275de4471&features=health_recommendations,breezometer_aqi",
+        success: function(data){
+            POL= ("Air Quality Index" + JSON.stringify(data.data.indexes.baqi.aqi));
+            $.ajax({
+        type: "GET",
+       
+        dataType: 'json',
+
+        url: "https://api.aerisapi.com/observations/closest?p="+y+","+x+"&client_id=Dcbk6XyhB7RQNRqmmsCcN&client_secret=vBOMeeL2INJasmXRQSeUCGMraXSzfxQOMJY4Ppwl",
+        success: function(data){
+            POL1=("\nTemperature in F" + JSON.stringify(data.response[0].ob.tempF)+"\nHumidity:" +JSON.stringify(data.response[0].ob.humidity)+"\nWeather:" +JSON.stringify(data.response[0].ob.weather)+"\nWind Speed MPH:" +JSON.stringify(data.response[0].ob.windSpeedMPH) + "\n" +POL);
+               $.ajax({
+        type: "GET",
+       
+        dataType: 'json',
+
+        url: "https://api.aerisapi.com/places/closest?p="+y+","+x+"&client_id=Dcbk6XyhB7RQNRqmmsCcN&client_secret=vBOMeeL2INJasmXRQSeUCGMraXSzfxQOMJY4Ppwl&client_id=Dcbk6XyhB7RQNRqmmsCcN&client_secret=vBOMeeL2INJasmXRQSeUCGMraXSzfxQOMJY4Ppwl",
+        success: function(data){
+            POL3= (POL1+ "\nPopulation:" +JSON.stringify(data.response[0].profile.pop) +"\nElevation:"+JSON.stringify(data.response[0].profile.elevFT) +"Ft"
+            	);
+                   $.ajax({
+        type: "GET",
+       
+        dataType: 'json',
+
+        url: "https://api.aerisapi.com/forecasts/closest?p="+y+","+x+"&client_id=Dcbk6XyhB7RQNRqmmsCcN&client_secret=vBOMeeL2INJasmXRQSeUCGMraXSzfxQOMJY4Ppwl&client_id=Dcbk6XyhB7RQNRqmmsCcN&client_secret=vBOMeeL2INJasmXRQSeUCGMraXSzfxQOMJY4Ppwl",
+        success: function(data){
+            POL4=("\nTemperature High in F:" + JSON.stringify(data.response[0].periods[0].maxTempF) + ("\nTemperature Low in F:" +data.response[0].periods[0].minTempF +POL3)
+            	);
+        
+                               $.ajax({
+        type: "GET",
+       
+        dataType: 'json',
+
+        url: "https://api.aerisapi.com/precip/summary/closest?p="+y+","+x+"&client_id=Dcbk6XyhB7RQNRqmmsCcN&client_secret=vBOMeeL2INJasmXRQSeUCGMraXSzfxQOMJY4Ppwl&client_id=Dcbk6XyhB7RQNRqmmsCcN&client_secret=vBOMeeL2INJasmXRQSeUCGMraXSzfxQOMJY4Ppwl",
+        success: function(data){
+            alert("Precipation in Last 72 hours in inches:" +JSON.stringify(data.response[0].periods[0].summary.precip.totalIN) + POL4
+            	);
+            
+ 
+                             
+             
+
+        }
+    });
+        }
+    });
+     
+        }
+    });   }
+    });
+             }
+    });
+}
+
+  
+
+</script>
+
+ 
+{% if user.is_authenticated %}
+  Hi {{ user.username }}!
+  <p><a href="{% url 'logout' %}">logout</a></p>
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">login</a>
+{% endif %}
+<div id='map_canvas'></div>
+        <div id="current">Nothing yet...</div>
+<script>
+var map = new google.maps.Map(document.getElementById('map_canvas'), {
+    zoom: 17,
+    center: new google.maps.LatLng(26.3683, -80.1289),
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+});var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
+
+var myMarker = new google.maps.Marker({
+icon: image,
+    position: new google.maps.LatLng(26.3683, -80.1289),
+    draggable: true
+
+});
+var service;
+
+  
+google.maps.event.addListener(myMarker, 'dragend', function (evt) {
+  
+    document.getElementById('current').innerHTML = '<p>Marker dropped: Current Lat: ' + evt.latLng.lat().toFixed(3) + ' Current Lng: ' + evt.latLng.lng().toFixed(3) + '</p>';
+    var x = evt.latLng.lat();
+    var y =evt.latLng.lng();
+    callAPIS(y, x);
+    var request = {
+    location: evt.latLng,
+    radius: '200',
+    type: ['']
+
+
+  };
+
+  service = new google.maps.places.PlacesService(map);
+ service.nearbySearch(request, callback);
+
+
+
+});
+
+
+google.maps.event.addListener(myMarker, 'dragstart', function (evt) {
+    document.getElementById('current').innerHTML = '<p>Currently dragging marker...</p>';
+});
+
+map.setCenter(myMarker.position);
+myMarker.setMap(map);
+function callback(results, status) {
+  if (status == google.maps.places.PlacesServiceStatus.OK) {
+    for (var i = 0; i < results.length; i++) {
+      var place = results[i];
+      createMarker(results[i]);
+
+    }
+  }
+}
+function createMarker(place) {
+        var marker = new google.maps.Marker({
+          map: map,
+          position: place.geometry.location
+        });
+
+       google.maps.event.addListener(marker, 'click', function() {
+              infowindow.setContent('<div><strong>' + place.name + '</strong><br>' +
+                'Place ID: ' + place.place_id + '<br>' +
+                place.formatted_address + '</div>');
+              infowindow.open(map, this);
+            });
+
+
+      }
+
+</script>
+
+{% endblock %}

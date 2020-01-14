@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+  {% block page_content %}
+  <style>
+  #mapd{
+        height: 60vh;  
+        width: 35vw;  
+       }
+       .projectcontainer {
+        
+  display: flex;
+  justify-content: center;
+ 
+
+}
+.projectgrid {
+ 
+  width: 100vw;
+  
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+
+  }
+.card-text{color:black;}
+.projectgriditem {
+ 
+ margin:2vh;
+ height:35vh;
+ width:35vw;
+ float:left;
+  }
+  .projectgriditem2{
+ 
+ margin:2vh;
+ min-height:20vh;
+ width:60vw;
+
+  }
+   div{color:white}</style>
+   </style>
+    <script>
+     
+// Initialize and add the map
+
+    </script>
+    <div class="projectcontainer">
+   <div class="projectgrid">
+    <div class="projectgriditem">
+<div class="card" style="opacity:1">
+     <div class="card-text"> <h1>{{ post.title }}</h1>
+      <small>
+          {{ post.created.date }} 
+        
+     </small>
+ </div>
+</div>
+      <div id="mapd"></div>
+ 
+  <h3>Leave a comment:</h3>
+     {% if request.user.is_authenticated %}
+     <form action="/events/{{ post.pk }}/" method="post">
+         {% csrf_token %}
+         {{ form.as_p }}
+         <button type="submit" class="btn btn-primary">Submit</button>
+     </form>
+     {% endif %}
+</div>
+     <div class="projectgriditem2">
+        <div class="card" style="min-height:20vh; opacity:1">
+ <div class="card-text">
+     <p>{{ post.body | linebreaks }}</p>
+ </div>
+</div>
+       
+ <div class="card" style="opacity:1">
+        <div class="card-text">
+     <h2>Air Quality</h2>
+  <p>The air quality of this area is {{ datetime }}</strong> </p>
+</div>
+</div>
+       <h3>Comments:</h3>
+     {% for comment in comments %}
+     <div class="card" style="opacity:1">
+        <div class="card-text">
+     <p>
+
+         On {{comment.created }}&nbsp;
+         <b>{{ comment.op }}</b> wrote:
+     </p>
+     <p>{{ comment.comment }}</p>
+     <p>{{ comment.category }}</p>
+     
+</div>
+</div>
+   
+<!--The div element for the map -->
+
+     {% endfor %}
+</div>
+    
+
+   <script>
+      var map;
+      function initMap() {
+        map = new google.maps.Map(document.getElementById('mapd'), {
+          center: {lat: {{ post.geolocation.lat }}, lng: {{ post.geolocation.lon }}},
+          zoom: 18
+        });
+         var marker = new google.maps.Marker({
+    position: {lat: {{ post.geolocation.lat }}, lng: {{ post.geolocation.lon }}},
+    map: map,
+    title: 'smd'
+  });
+      }
+    </script>
+    
+<script async defer
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCewAvTu5t53SI1Pj5CglYnnyC-CpnZr-4&callback=initMap">
+</script>
+
+   
+  
+ </div>
+ {% endblock %}
+ 

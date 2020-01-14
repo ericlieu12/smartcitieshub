@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block page_content %}
+<style>
+	p{color:white;}
+	form{color:white;}
+</style>
+<form method="post">
+
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <p class="form-actions">
+      <button type="submit", class="btn btn-primary">
+      	<span style="color:black">REQUEST</span><span style="color:orange"></span></button>
+   </p>
+   
+</form>
+</div>
+</div>
+
+{% endblock %}
